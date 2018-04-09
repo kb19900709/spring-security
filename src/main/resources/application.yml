@@ -1,0 +1,16 @@
+server:
+  port: 8090
+
+spring:
+  application:
+    name: spring-security
+  redis:
+    host: localhost
+    port: 6379
+    password: secret_password
+
+jwt:
+  expirationTime: 300000
+  expirationString: expS
+  securityCode: ${spring.redis.password}
+  roleKey: authorities

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false">
+
+    <property name="consolePattern" value="%d{HH:mm:ss.SSS} [%thread] %-5level %logger{0}[%M:%L] - %msg%n"/>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                ${consolePattern}
+            </pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.springframework.web" level="INFO"/>
+    <logger name="org.springframework.test" level="INFO"/>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+</configuration>

@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 public class JwtProp {
     private long expirationTime;
     private String expirationString;
+    private String headerKey;
     private String securityCode;
+    private String sessionKey;
     private String roleKey;
 
     public long getExpirationTime() {
@@ -27,12 +29,28 @@ public class JwtProp {
         this.expirationString = expirationString;
     }
 
+    public String getHeaderKey() {
+        return headerKey;
+    }
+
+    public void setHeaderKey(String headerKey) {
+        this.headerKey = headerKey;
+    }
+
     public String getSecurityCode() {
         return securityCode;
     }
 
     public void setSecurityCode(String securityCode) {
         this.securityCode = securityCode;
+    }
+
+    public String getSessionKey() {
+        return sessionKey;
+    }
+
+    public void setSessionKey(String sessionKey) {
+        this.sessionKey = sessionKey;
     }
 
     public String getRoleKey() {

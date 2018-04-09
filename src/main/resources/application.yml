@@ -13,4 +13,6 @@ jwt:
   expirationTime: 300000
   expirationString: expS
   securityCode: ${spring.redis.password}
+  headerKey: Authorization
   roleKey: authorities
+  sessionKey: sessionId

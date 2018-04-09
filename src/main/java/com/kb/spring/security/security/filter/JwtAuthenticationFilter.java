@@ -2,10 +2,11 @@ package com.kb.spring.security.security.filter;
 
 import com.kb.spring.security.security.TokenService;
 import com.kb.spring.security.security.bean.AuthStatus;
+import com.kb.spring.security.security.bean.CurrentUser;
+import com.kb.spring.security.service.prop.JwtProp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,10 +30,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     @Autowired
+    private SpringSessionBackedSessionRegistry sessionRegistry;
+
+    @Autowired
     private TokenService tokenService;
 
     @Autowired
-    private SpringSessionBackedSessionRegistry sessionRegistry;
+    private CurrentUser currentUser;
+
+    @Autowired
+    private JwtProp jwtProp;
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
@@ -43,25 +50,31 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         Authentication authentication;
         try {
-            String jwtStr = Optional.ofNullable(httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION))
+            Optional.ofNullable(httpServletRequest.getHeader(jwtProp.getHeaderKey()))
                     .orElseThrow(() -> new BadCredentialsException("No JWT in http header"));
-            String sessionId = Optional.ofNullable(httpServletRequest.getHeader("x-auth-token"))
-                    .orElseThrow(() -> new SessionAuthenticationException("No sessionId in http header"));
 
-            authentication = tokenService.getAuthentication(jwtStr);
-            String theLastSessionId = sessionRegistry.getAllSessions(authentication.getName(), false)
+            Exception parseError = currentUser.getError();
+            if (parseError != null) {
+                throw parseError;
+            }
+
+            String currentSessionId = Optional.ofNullable(currentUser.getSessionId())
+                    .orElseThrow(() -> new SessionAuthenticationException("No sessionId in JWT"));
+
+            String theLastSessionId = sessionRegistry.getAllSessions(currentUser.getUserName(), false)
                     .stream()
                     .sorted(getLastSessionInformationComparator().reversed())
                     .findFirst()
                     .map(SessionInformation::getSessionId)
                     .orElse("");
 
-            if (!sessionId.equals(theLastSessionId)) {
+            if (!currentSessionId.equals(theLastSessionId)) {
                 throw new SessionAuthenticationException(AuthStatus.DEFAULT_ERROR_MESSAGE);
             }
 
-            String newJwt = tokenService.getJwt(authentication);
-            httpServletResponse.setHeader(HttpHeaders.AUTHORIZATION, newJwt);
+            String newJwt = tokenService.getJwt();
+            httpServletResponse.setHeader(jwtProp.getHeaderKey(), newJwt);
+            authentication = tokenService.getAuthentication();
         } catch (Exception e) {
             authentication = null;
             httpServletRequest.setAttribute(AuthStatus.DEFAULT_AUTH_EXCEPTION, e);

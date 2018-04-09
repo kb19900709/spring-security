@@ -1,4 +1,4 @@
-package com.kb.spring.security.config;
+package com.kb.spring.security.security.config;
 
 
 import com.kb.spring.security.security.RestAuthenticationEntryPoint;
@@ -58,7 +58,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout()
                 .logoutUrl("/app-logout")
-                .deleteCookies("JSESSIONID")
                 .logoutSuccessHandler(sessionLogoutSuccessHandler)
                 .and()
                 .sessionManagement()

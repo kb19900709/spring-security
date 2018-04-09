@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 
 @Service
 public class JwtService {
@@ -16,12 +17,12 @@ public class JwtService {
     @Autowired
     private JwtProp jwtProp;
 
-    public String getJwtStr(String name, String roles) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+    public String getJwtStr(String name, Map<String, Object> params) {
         Date expirationTime = new Date(System.currentTimeMillis() + jwtProp.getExpirationTime());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+        params.put(jwtProp.getExpirationString(), sdf.format(expirationTime));
         return Jwts.builder()
-                .claim(jwtProp.getRoleKey(), roles)
-                .claim(jwtProp.getExpirationString(), sdf.format(expirationTime))
+                .setClaims(params)
                 .setSubject(name)
                 .setExpiration(expirationTime)
                 .signWith(SignatureAlgorithm.HS512, jwtProp.getSecurityCode())
@@ -35,7 +36,11 @@ public class JwtService {
                 .getBody();
     }
 
-    public String getROLE_KEY() {
+    public String getRoleKey() {
         return jwtProp.getRoleKey();
+    }
+
+    public String getSessionKey() {
+        return jwtProp.getSessionKey();
     }
 }

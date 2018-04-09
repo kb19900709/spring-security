@@ -1,7 +1,7 @@
 package com.kb.spring.security.security;
 
 
-import com.kb.spring.security.service.AuthService;
+import com.kb.spring.security.security.bean.CurrentUser;
 import com.kb.spring.security.service.JwtService;
 import io.jsonwebtoken.Claims;
 import org.slf4j.Logger;
@@ -14,9 +14,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static java.util.stream.Collectors.joining;
 
@@ -29,27 +27,46 @@ public class TokenService {
     private JwtService jwtService;
 
     @Autowired
-    private AuthService authService;
+    private CurrentUser currentUser;
 
-    public String getJwt(Authentication authentication) {
-        String name = authentication.getName();
-        String roles = authService.findUserRoles(name).stream().collect(joining(","));
-        return jwtService.getJwtStr(name, roles);
+    public String getJwt() {
+        String name = currentUser.getUserName();
+        String roles = Optional.ofNullable(currentUser.getAuthorities()).orElseGet(ArrayList::new).stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(joining(","));
+        String sessionId = currentUser.getSessionId();
+
+        if (name != null && roles != null && sessionId != null) {
+            Map<String, Object> params = new HashMap<>();
+            params.put(jwtService.getRoleKey(), roles);
+            params.put(jwtService.getSessionKey(), sessionId);
+            return jwtService.getJwtStr(name, params);
+        }
+
+        return null;
     }
 
-    public Authentication getAuthentication(String jwtStr) {
+    public Authentication getAuthentication() {
+        String name = currentUser.getUserName();
+        List<GrantedAuthority> authorities = currentUser.getAuthorities();
+        return name != null ? new UsernamePasswordAuthenticationToken(name, null, authorities) : null;
+    }
+
+    public void initCurrentUser(String jwtStr) {
         try {
             Claims claims = jwtService.getJwtClaims(jwtStr);
             String name = claims.getSubject();
+            String sessionId = (String) claims.get(jwtService.getSessionKey());
             List<GrantedAuthority> authorities =
-                    Optional.ofNullable(AuthorityUtils.commaSeparatedStringToAuthorityList((String) claims.get(jwtService.getROLE_KEY())))
+                    Optional.ofNullable(AuthorityUtils.commaSeparatedStringToAuthorityList((String) claims.get(jwtService.getRoleKey())))
                             .orElseGet(ArrayList::new);
 
-            return name != null ?
-                    new UsernamePasswordAuthenticationToken(name, null, authorities) : null;
+            currentUser.setUserName(name);
+            currentUser.setSessionId(sessionId);
+            currentUser.setAuthorities(authorities);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
-            throw new BadCredentialsException(String.format("JWT parsed error, maybe it's an illegal authorization: %s", jwtStr));
+            currentUser.setError(new BadCredentialsException(String.format("JWT parsed error, maybe it's an illegal authorization: %s", jwtStr)));
         }
     }
 }

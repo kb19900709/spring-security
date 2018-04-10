@@ -6,12 +6,20 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties("jwt")
 public class JwtProp {
+    private String authoritiesKey;
     private long expirationTime;
     private String expirationString;
     private String headerKey;
     private String securityCode;
     private String sessionKey;
-    private String roleKey;
+
+    public String getAuthoritiesKey() {
+        return authoritiesKey;
+    }
+
+    public void setAuthoritiesKey(String authoritiesKey) {
+        this.authoritiesKey = authoritiesKey;
+    }
 
     public long getExpirationTime() {
         return expirationTime;
@@ -51,13 +59,5 @@ public class JwtProp {
 
     public void setSessionKey(String sessionKey) {
         this.sessionKey = sessionKey;
-    }
-
-    public String getRoleKey() {
-        return roleKey;
-    }
-
-    public void setRoleKey(String roleKey) {
-        this.roleKey = roleKey;
     }
 }

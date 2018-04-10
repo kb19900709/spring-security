@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 @Service
 public class JwtService {
@@ -17,10 +19,13 @@ public class JwtService {
     @Autowired
     private JwtProp jwtProp;
 
-    public String getJwtStr(String name, Map<String, Object> params) {
+    public String getJwtStr(String name, Consumer<Map<String, Object>> paramsConsumer) {
+        Map<String, Object> params = new HashMap<>();
+        paramsConsumer.accept(params);
+
         Date expirationTime = new Date(System.currentTimeMillis() + jwtProp.getExpirationTime());
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
-        params.put(jwtProp.getExpirationString(), sdf.format(expirationTime));
+        params.put(jwtProp.getExpirationString(), new SimpleDateFormat("yyyy/MM/dd hh:mm:ss").format(expirationTime));
+
         return Jwts.builder()
                 .setClaims(params)
                 .setSubject(name)
@@ -36,8 +41,8 @@ public class JwtService {
                 .getBody();
     }
 
-    public String getRoleKey() {
-        return jwtProp.getRoleKey();
+    public String getAuthoritiesKey() {
+        return jwtProp.getAuthoritiesKey();
     }
 
     public String getSessionKey() {

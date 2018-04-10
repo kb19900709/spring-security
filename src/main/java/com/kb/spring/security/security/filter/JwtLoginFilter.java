@@ -7,6 +7,7 @@ import com.kb.spring.security.security.handler.LoginFailureHandler;
 import com.kb.spring.security.security.handler.LoginSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -21,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 public class JwtLoginFilter extends AbstractAuthenticationProcessingFilter {
 
@@ -42,11 +44,16 @@ public class JwtLoginFilter extends AbstractAuthenticationProcessingFilter {
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws AuthenticationException, IOException, ServletException {
-        AccountCredentials accountCredentials = mapper.readValue(httpServletRequest.getInputStream(), AccountCredentials.class);
+        AccountCredentials accountCredentials =
+                Optional.ofNullable(mapper.readValue(httpServletRequest.getInputStream(), AccountCredentials.class))
+                        .orElseThrow(() -> new BadCredentialsException("Please input correct data to login"));
+
         return getAuthenticationManager().authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        accountCredentials.getUserName(),
-                        accountCredentials.getPassword()
+                        Optional.ofNullable(accountCredentials.getUserName())
+                                .orElseThrow(() -> new BadCredentialsException("Please input userName to login"))
+                        , Optional.ofNullable(accountCredentials.getPassword())
+                                .orElseThrow(() -> new BadCredentialsException("Please input password to login"))
                 )
         );
     }

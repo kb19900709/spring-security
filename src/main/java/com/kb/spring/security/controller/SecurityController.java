@@ -1,6 +1,7 @@
 package com.kb.spring.security.controller;
 
 import com.kb.spring.security.security.bean.AuthStatus;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +17,11 @@ public class SecurityController extends BaseController {
 
     @PostMapping("login/fail")
     public AuthStatus loginFail() {
+        Object exception = httpRequest.getAttribute(AuthStatus.DEFAULT_AUTH_EXCEPTION);
+        if (exception != null) {
+            AuthenticationException authException = (AuthenticationException) exception;
+            return AuthStatus.initAuthStatus(authException.getMessage(), authException.getClass().getName());
+        }
         return AuthStatus.initAuthStatus("Login fail, please try again");
     }
 

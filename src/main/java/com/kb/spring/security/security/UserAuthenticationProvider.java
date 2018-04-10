@@ -26,7 +26,7 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
         if (isValid(authentication)) {
             return getNewAuthentication(authentication);
         }
-        throw new BadCredentialsException("Password fail");
+        throw new BadCredentialsException("Password isn't correct");
     }
 
     @Override
@@ -43,12 +43,12 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
     private Authentication getNewAuthentication(Authentication authentication) {
         String name = authentication.getName();
         String password = authentication.getCredentials().toString();
-        List<GrantedAuthority> rolesList = getRolesByName(name);
+        List<GrantedAuthority> rolesList = getAuthorities(name);
         return new UsernamePasswordAuthenticationToken(name, password, rolesList);
     }
 
-    private List<GrantedAuthority> getRolesByName(String name) {
-        return authService.findUserRoles(name)
+    private List<GrantedAuthority> getAuthorities(String name) {
+        return authService.findUserAuthorities(name)
                 .stream()
                 .map(GrantedAuthorityImpl::new)
                 .collect(toList());

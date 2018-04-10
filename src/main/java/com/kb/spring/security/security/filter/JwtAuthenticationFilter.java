@@ -51,7 +51,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         Authentication authentication;
         try {
             Optional.ofNullable(httpServletRequest.getHeader(jwtProp.getHeaderKey()))
-                    .orElseThrow(() -> new BadCredentialsException("No JWT in http header"));
+                    .orElseThrow(() -> new BadCredentialsException("There is no JWT in http header"));
 
             Exception parseError = currentUser.getError();
             if (parseError != null) {
@@ -59,7 +59,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
             String currentSessionId = Optional.ofNullable(currentUser.getSessionId())
-                    .orElseThrow(() -> new SessionAuthenticationException("No sessionId in JWT"));
+                    .orElseThrow(() -> new SessionAuthenticationException("There is no sessionId in JWT"));
 
             String theLastSessionId = sessionRegistry.getAllSessions(currentUser.getUserName(), false)
                     .stream()

@@ -14,7 +14,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.joining;
 
@@ -37,10 +39,10 @@ public class TokenService {
         String sessionId = currentUser.getSessionId();
 
         if (name != null && roles != null && sessionId != null) {
-            Map<String, Object> params = new HashMap<>();
-            params.put(jwtService.getRoleKey(), roles);
-            params.put(jwtService.getSessionKey(), sessionId);
-            return jwtService.getJwtStr(name, params);
+            return jwtService.getJwtStr(name, params -> {
+                params.put(jwtService.getAuthoritiesKey(), roles);
+                params.put(jwtService.getSessionKey(), sessionId);
+            });
         }
 
         return null;
@@ -58,14 +60,14 @@ public class TokenService {
             String name = claims.getSubject();
             String sessionId = (String) claims.get(jwtService.getSessionKey());
             List<GrantedAuthority> authorities =
-                    Optional.ofNullable(AuthorityUtils.commaSeparatedStringToAuthorityList((String) claims.get(jwtService.getRoleKey())))
+                    Optional.ofNullable(AuthorityUtils.commaSeparatedStringToAuthorityList((String) claims.get(jwtService.getAuthoritiesKey())))
                             .orElseGet(ArrayList::new);
 
             currentUser.setUserName(name);
             currentUser.setSessionId(sessionId);
             currentUser.setAuthorities(authorities);
         } catch (Exception e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.debug(e.getMessage());
             currentUser.setError(new BadCredentialsException(String.format("JWT parsed error, maybe it's an illegal authorization: %s", jwtStr)));
         }
     }

@@ -12,7 +12,15 @@ spring:
 jwt:
   expirationTime: 300000
   expirationString: expS
+  ### securityCode:
+  ### Sets the signing key used to verify any discovered JWS digital signature.
+  ### If the specified JWT string is not a JWS (no signature), this key is not used.
   securityCode: ${spring.redis.password}
+  ### headerKey:
+  ### Customize HTTP header to convey the current sessionId instead of cookies.
+  ### In this case, the value would be a JWT string which combines sessionId.
   headerKey: Authorization
-  authoritiesKey: authorities
+  ### sessionKey:
+  ### The key of sessionId in JWT string.
   sessionKey: sessionId
+  authoritiesKey: authorities

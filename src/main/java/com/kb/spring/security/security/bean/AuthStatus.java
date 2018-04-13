@@ -23,6 +23,7 @@ public class AuthStatus {
 
     private String authMessage;
     private String errorType;
+    private String currentUserName;
 
     public String getAuthMessage() {
         return authMessage;
@@ -38,5 +39,13 @@ public class AuthStatus {
 
     public void setErrorType(String errorType) {
         this.errorType = errorType;
+    }
+
+    public String getCurrentUserName() {
+        return currentUserName;
+    }
+
+    public void setCurrentUserName(String currentUserName) {
+        this.currentUserName = currentUserName;
     }
 }

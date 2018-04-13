@@ -6,13 +6,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("auth")
 public class SecurityController extends BaseController {
 
     @PostMapping("login/success")
     public AuthStatus loginSuccess() {
-        return AuthStatus.initAuthStatus("Login success");
+        AuthStatus result = AuthStatus.initAuthStatus("Login success");
+        Optional.ofNullable(httpRequest.getAttribute("userName")).ifPresent(userName ->
+            result.setCurrentUserName(userName.toString())
+        );
+        return result;
     }
 
     @PostMapping("login/fail")

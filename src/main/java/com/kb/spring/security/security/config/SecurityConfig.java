@@ -4,7 +4,7 @@ package com.kb.spring.security.security.config;
 import com.kb.spring.security.security.RestAuthenticationEntryPoint;
 import com.kb.spring.security.security.UserAuthenticationProvider;
 import com.kb.spring.security.security.filter.JwtAuthenticationFilter;
-import com.kb.spring.security.security.filter.JwtLoginFilter;
+import com.kb.spring.security.security.filter.LoginFilter;
 import com.kb.spring.security.security.handler.SessionExpiredHandler;
 import com.kb.spring.security.security.handler.SessionLogoutSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, getWhitelist()).permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilterBefore(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(loginFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling()
                 .authenticationEntryPoint(restAuthenticationEntryPoint)
@@ -72,8 +72,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public JwtLoginFilter jwtLoginFilter() throws Exception {
-        return new JwtLoginFilter(LOGIN_URL, authenticationManager());
+    public LoginFilter loginFilter() throws Exception {
+        return new LoginFilter(LOGIN_URL, authenticationManager());
     }
 
     private String[] getWhitelist() {

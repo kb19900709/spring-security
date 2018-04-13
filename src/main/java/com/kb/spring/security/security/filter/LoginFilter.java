@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-public class JwtLoginFilter extends AbstractAuthenticationProcessingFilter {
+public class LoginFilter extends AbstractAuthenticationProcessingFilter {
 
     @Autowired
     private LoginSuccessHandler loginSuccessHandler;
@@ -37,7 +37,7 @@ public class JwtLoginFilter extends AbstractAuthenticationProcessingFilter {
 
     private ObjectMapper mapper = new ObjectMapper();
 
-    public JwtLoginFilter(String url, AuthenticationManager authManager) {
+    public LoginFilter(String url, AuthenticationManager authManager) {
         super(new AntPathRequestMatcher(url));
         setAuthenticationManager(authManager);
     }

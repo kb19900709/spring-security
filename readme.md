@@ -5,6 +5,6 @@ If you've already had experiences of Spring Boot and Spring Security and you're 
 - Spring Security
 - Spring Session
 - Spring MVC
-## Requirement
+## Requirements
 - Redis 2.8.x or above
 - jdk 1.8.x or above

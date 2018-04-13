@@ -13,7 +13,8 @@ If you've already had experiences of Spring Boot and Spring Security and you're 
 - jdk 1.8.x or above
 
 ## Important
-**Please check the yaml at `src/main/resources/application.yml` first.**
+**Please check the yaml at `src/main/resources/application.yml` first.**  
+If necessary, you can change it for your claim.
 ```yaml
 ### headerKey:
 ### Customize HTTP header to convey the current sessionId instead of cookies.
@@ -23,15 +24,15 @@ headerKey: Authorization
 ### The key of sessionId in JWT string.
 sessionKey: sessionId
 ```
-If necessary, you can change it for your claim.
 
 ## Testing
 ### List of major RESTful APIs
-|METHOD|URL|REMARK|
+|METHOD|URL|REMARK|
 |:--|:--|:--|
 |POST|/app-login|Request body: **{"userName":"" ,"password":""}**.<br>Response body: **{"authMessage": "", "errorType": "", "currentUserName": ""}**.|
 |GET|/test?browser=POSTMAN|Please send the request two times and observe the responses.|
 |POST|/app-logout||
+
 **Note**:  
 Except login method, the rest of methods need to carry JWT string in http header, the header name is defined at `application.yaml`.
 

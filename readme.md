@@ -13,7 +13,7 @@ If you've already had experiences of Spring Boot and Spring Security and you're 
 - jdk 1.8.x or above
 
 ## Important
-**Please check the yaml at [application.yml](https://goo.gl/5aMYRc) first.**  
+**Please check the yaml at [application.yml](https://goo.gl/5aMYRc) first.**  
 If necessary, you can change it for your claim.
 ```yaml
 ### headerKey:
@@ -34,7 +34,7 @@ sessionKey: sessionId
 |POST|/app-logout||
 
 **Note**:  
-Except login method, the rest of methods need to carry JWT string in http header, the header name is defined at [application.yml](https://goo.gl/5aMYRc).
+Except login method, the rest of methods need to carry JWT string in http header, the header name is defined at [application.yml](https://goo.gl/5aMYRc).
 
 ### List of users
 |NAME|PASSWORD|ROLES|AUTHS|

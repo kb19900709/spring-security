@@ -24,3 +24,11 @@ jwt:
   ### The key of sessionId in JWT string.
   sessionKey: sessionId
   authoritiesKey: authorities
+
+security:
+  loginUrl: /app-login
+  logoutUrl: /app-logout
+  whiteList:
+      - ${security.url.login}
+      - /auth/login/*
+  sessionLimit: 1

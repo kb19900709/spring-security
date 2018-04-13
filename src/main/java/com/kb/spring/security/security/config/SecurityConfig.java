@@ -7,6 +7,7 @@ import com.kb.spring.security.security.filter.JwtAuthenticationFilter;
 import com.kb.spring.security.security.filter.LoginFilter;
 import com.kb.spring.security.security.handler.SessionExpiredHandler;
 import com.kb.spring.security.security.handler.SessionLogoutSuccessHandler;
+import com.kb.spring.security.service.prop.SecurityProp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +25,8 @@ import org.springframework.session.security.SpringSessionBackedSessionRegistry;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private static final String LOGIN_URL = "/app-login";
+    @Autowired
+    private SecurityProp securityProp;
 
     @Autowired
     private UserAuthenticationProvider userAuthenticationProvider;
@@ -48,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST, getWhitelist()).permitAll()
+                .antMatchers(HttpMethod.POST, securityProp.getWhiteList()).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(loginFilter(), UsernamePasswordAuthenticationFilter.class)
@@ -57,11 +59,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(restAuthenticationEntryPoint)
                 .and()
                 .logout()
-                .logoutUrl("/app-logout")
+                .logoutUrl(securityProp.getLogoutUrl())
                 .logoutSuccessHandler(sessionLogoutSuccessHandler)
                 .and()
                 .sessionManagement()
-                .maximumSessions(1)
+                .maximumSessions(securityProp.getSessionLimit())
                 .sessionRegistry(sessionRegistry)
                 .expiredSessionStrategy(sessionExpiredHandler);
     }
@@ -73,11 +75,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public LoginFilter loginFilter() throws Exception {
-        return new LoginFilter(LOGIN_URL, authenticationManager());
-    }
-
-    private String[] getWhitelist() {
-        final String LOGIN_FORWARD_URL = "/auth/login/*";
-        return new String[]{LOGIN_URL, LOGIN_FORWARD_URL};
+        return new LoginFilter(securityProp.getLoginUrl(), authenticationManager());
     }
 }

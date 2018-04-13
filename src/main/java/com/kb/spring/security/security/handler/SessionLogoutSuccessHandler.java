@@ -14,7 +14,6 @@ public class SessionLogoutSuccessHandler implements LogoutSuccessHandler {
 
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        //TODO 身份驗證
         request.getRequestDispatcher("auth/login/out").forward(request, response);
     }
 }

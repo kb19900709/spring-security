@@ -1,6 +1,8 @@
 package com.kb.spring.security.controller;
 
 import com.kb.spring.security.security.bean.AuthStatus;
+import com.kb.spring.security.security.bean.CurrentUser;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,12 +14,13 @@ import java.util.Optional;
 @RequestMapping("auth")
 public class SecurityController extends BaseController {
 
+    @Autowired
+    private CurrentUser currentUser;
+
     @PostMapping("login/success")
     public AuthStatus loginSuccess() {
         AuthStatus result = AuthStatus.initAuthStatus("Login success");
-        Optional.ofNullable(httpRequest.getAttribute("userName")).ifPresent(userName ->
-            result.setCurrentUserName(userName.toString())
-        );
+        Optional.ofNullable(currentUser.getUserName()).ifPresent(result::setCurrentUserName);
         return result;
     }
 
@@ -33,6 +36,8 @@ public class SecurityController extends BaseController {
 
     @PostMapping("login/out")
     public AuthStatus logout() {
-        return AuthStatus.initAuthStatus("Logout success");
+        AuthStatus result = AuthStatus.initAuthStatus("Logout success");
+        Optional.ofNullable(currentUser.getUserName()).ifPresent(result::setCurrentUserName);
+        return result;
     }
 }

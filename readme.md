@@ -27,21 +27,21 @@ sessionKey: sessionId
 
 ## Testing
 ### List of major RESTful APIs
-|METHOD|URL|REMARK|
-|:--|:--|:--|
-|POST|/app-login|Request body: **{"userName":"" ,"password":""}**.<br>Response body: **{"authMessage": "", "errorType": "", "currentUserName": ""}**.|
-|GET|/test?browser=POSTMAN|Please send the request two times and observe the responses.|
-|POST|/app-logout||
+| METHOD | URL | REMARK |
+| :---- | :---- | :---- |
+| POST | /app-login | Request body: **{"userName":"" ,"password":""}**.<br>Response body: **{"authMessage": "", "errorType": "", "currentUserName": ""}**. |
+| GET | /test?browser=POSTMAN | Please send the request two times and observe the responses. |
+| POST | /app-logout |  |
 
 **Note**:  
 Except login method, the rest of methods need to carry JWT string in http header, the header name is defined at [application.yml](https://goo.gl/5aMYRc).
 
 ### List of users
-|NAME|PASSWORD|ROLES|AUTHS|
-|:--|:--|:--|:--|
-|boss|i_m_boss|BOSS,ADMIN|R,W,D|
-|admin|123456|ADMIN|R,W,D|
-|kb|654321|MEMBER|R,W|
-|guest|guest|GUEST|R|  
+| NAME | PASSWORD | ROLES | AUTHS |
+| :---- | :---- | :---- | :---- |
+| boss | i_m_boss | BOSS,ADMIN | R,W,D |
+| admin | 123456 | ADMIN | R,W,D |
+| kb | 654321 | MEMBER | R,W |
+| guest | guest | GUEST | R |  
 
 You can modify the list of users at [UserAuthProfile.java](https://goo.gl/44oKNK).

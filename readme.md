@@ -1,11 +1,11 @@
 # Spring Security
 [![Build Status](https://travis-ci.org/kb19900709/spring-security.svg?branch=master)](https://travis-ci.org/kb19900709/spring-security)  
-If you've already had experiences of Spring Boot and Spring Security and you're also looking for a solution of RESTful security and supports clustered sessions, please take this repository as reference.  
+If you've already had experiences of Spring Boot and Spring Security and you're also looking for a solution of RESTful security, supports clustered sessions, please take this repository as reference.  
 
-## Modules
-- Spring Security
-- Spring Session
-- Spring MVC
+## Core Modules
+- [Spring Boot](https://goo.gl/Y4dtTB)
+- [Spring Security](https://goo.gl/D9tf7m)
+- [Spring Session](https://goo.gl/Apn8T3)
 
 ## Requirements
 - Maven
@@ -14,7 +14,7 @@ If you've already had experiences of Spring Boot and Spring Security and you're 
 
 ## Important
 **Please check the yaml at [application.yml](https://goo.gl/5aMYRc) first.**  
-If necessary, you can change it for your claim.
+If necessary, you can modify the value for your claim.
 ```yaml
 ### headerKey:
 ### Customize HTTP header to convey the current sessionId instead of cookies.

@@ -14,11 +14,11 @@ If you've already had experiences of Spring Boot and Spring Security and you're 
 
 ## Important
 **Please check the yaml at [application.yml](https://goo.gl/5aMYRc) first.**  
-If necessary, you can modify the value for your claim.
+If necessary, you can modify the value for individual request.
 ```yaml
 ### headerKey:
-### Customize HTTP header to convey the current sessionId instead of cookies.
-### In this case, the value would be a JWT string which combines sessionId.
+### Customize HTTP header to represent the current sessionId instead of cookies.
+### In this case, the value would be a JWT string which brings sessionId.
 headerKey: Authorization
 ### sessionKey:
 ### The key of sessionId in JWT string.
